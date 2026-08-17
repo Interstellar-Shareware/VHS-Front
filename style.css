@@ -1,0 +1,27 @@
+.container {
+  display: grid; 
+  grid-template-columns: 0.8fr 1fr 1fr; 
+  grid-template-rows: 1fr 1fr 1fr; 
+  gap: 0px 0px; 
+  grid-template-areas: 
+    "Menu Stats Stats"
+    "Menu Stats Stats"
+    "Menu Stats Stats"; 
+}
+.Menu { grid-area: Menu; }
+.Stats { grid-area: Stats; }
+
+table, tr, td{
+    border: 1px;
+    border-color: black;
+    border-style: solid;
+}
+
+td{
+    padding: 3px;
+    font-size: large;
+}
+
+html {
+  scrollbar-gutter: stable;
+}

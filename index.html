@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/@sakun/system.css" />
+    <link href="style.css" rel="stylesheet">
+    <script src="vhs.js"></script>
+    <title>VHS</title>
+</head>
+<body>
+    
+    <div class="container">
+
+        <div class="Menu">
+
+            <div class="window">
+                <div class="title-bar">
+                    <button aria-label="Close" class="close"></button>
+                    <h1 class="title">VHS</h1>
+                    <button aria-label="Resize" class="resize"></button>
+                </div>
+                <div class="separator"></div>
+
+                <div class="window-pane">
+                    <h3 style="margin: 4px 0px;">Very (un)Helpful Stats [Beta]</h3>
+                    <h5 style="margin: 4px 0px;">A Whatpulse stats tool by Interstellar Shareware</h5>
+                    <br>
+
+                    <div class="modal-dialog outer-border">
+                        <div class="inner-border center">
+                            <div class="modal-contents">
+                                <div style="padding: 5px 45px 5px 5px;">
+
+                                    <input id="username" type="text" style="width:100%;" placeholder="Whatpulse username"/>
+
+                                </div>
+                                <section class="field-row" style="justify-content: flex-end">
+                                    <button class="btn" style="width:95px;" onclick="getData()">Submit</button>
+                                </section>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <br>
+
+                    <section class="field-row" style="justify-content: flex-start">
+                        <label for="text_find" class="modeless-text">Progress bar resolution: </label>
+                        <input id="progressBarResolution" type="text" style="width:100px;" value="20"/>
+                    </section>
+
+                    <section>
+                        <select id="distanceMode">
+                            <option>Kilometers</option>
+                            <option selected>Miles</option>
+                        </select>
+                    </section>
+
+                    <div class="field-row" style="margin-top: 5px;">
+                        <input id="teamModeCheck" type="checkbox" name="chbx-example" onclick="toggleTeamMode()">
+                        <label for="teamModeCheck">Get User's Team Data</label>
+                    </div>
+
+                    <br>
+                    <hr>
+
+                    <p style="font-size: medium;">
+                        Very (un)Helpful Stats is a tool that turns your Whatpulse stats into significantly less helpful stats. This started with me tracking my mouse distance to the Moon in my geek window, then it spiraled rapidly from there. But I got to learn Node.js and some design stuff, so it all evens out. Input a username to view that user's stats, adjust the settings below, or enable 'team data' to view the user's team. More to come, but you can leave suggestions in the Issues tab of the GitHub page below!
+                    </p>
+ 
+                    <hr>
+                    <br>
+
+                    <button class="btn" style="width:100%; margin: 1px 0px;" onclick="document.location.href='https://www.interstellarshareware.net'">More Interstellar Shareware</button>
+                    <button class="btn" style="width:100%; margin: 1px 0px;" onclick="document.location.href='https://github.com/Interstellar-Shareware/VHS-Front'">View Source/Suggest Stats</button>
+                    <button class="btn" style="width:100%; margin: 1px 0px;" onclick="kelsStats()">View Kellen's Stats :)</button>
+
+                </div>
+            </div>
+
+        </div>
+
+        <div class="Stats">
+
+            <div class="standard-dialog center scale-down" id="errOther" style="width:30rem;" hidden>
+                <h1 class="dialog-text">Error!</h1>
+                <p class="dialog-text">Either the username is not found or the rate limit has been reached! Confirm the username or try again in a minute!</p>
+            </div>
+
+            <div class="standard-dialog center scale-down" id="mainStats" hidden style="margin: 0px;">
+
+                <h2>Keys | <span id="totalKeys">000000</span></h2>
+
+                    <table>
+                        <tr>
+                            <td title="Using 80 chars per line">You typed all of the Linux source code <span id="linuxKeys" style="font-weight: bold;">0</span> times!</td>
+                            <td id="linuxKeysBar">&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;</td>
+                            <td id="linuxKeysPercent">000%</td>
+                        </tr>
+                        <tr>
+                            <td>...All of Wikipedia <span id="wikiKeys" style="font-weight: bold;">0</span> times!</td>
+                            <td id="wikiKeysBar">&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;</td>
+                            <td id="wikiKeysPercent">000%</td>
+                        </tr>
+                    </table>
+
+                <h1 title="From the XKCD post that inspired this">If every key requires 1.65 millijoules per press...</h1>
+
+                <table>
+                    <tr>
+                        <td>You could run a potato battery for <span id="potatoKeys" style="font-weight: bold;">0</span> days!</td>
+                        <td id="potatoKeysBar">&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;</td>
+                        <td id="potatoKeysPercent">000%</td>
+                    </tr>
+                    <tr>
+                        <td>...Fill <span id="aabatteryKeys" style="font-weight: bold;">0</span> AA batteries!</td>
+                        <td id="aabatteryKeysBar">&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;</td>
+                        <td id="aabatteryKeysPercent">000%</td>
+                    </tr>
+                    <tr>
+                        <td>...Fill <span id="vbatteryKeys" style="font-weight: bold;">0</span> 9v batteries!</td>
+                        <td id="vbatteryKeysBar">&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;</td>
+                        <td id="vbatteryKeysPercent">000%</td>
+                    </tr>
+                    <tr>
+                        <td>...Boil <span id="waterKeys" style="font-weight: bold;">0</span> liters of water!</td>
+                        <td id="waterKeysBar">&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;</td>
+                        <td id="waterKeysPercent">000%</td>
+                    </tr>
+                    <tr>
+                        <td>...Burn the calories of <span id="coffeeKeys" style="font-weight: bold;">0</span> cups of coffee!</td>
+                        <td id="coffeeKeysBar">&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;</td>
+                        <td id="coffeeKeysPercent">000%</td>
+                    </tr>
+                    <tr>
+                        <td>...<span id="grapesKeys" style="font-weight: bold;">0</span> grapes!</td>
+                        <td id="grapesKeysBar">&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;</td>
+                        <td id="grapesKeysPercent">000%</td>
+                    </tr>
+                    <tr>
+                        <td>...<span id="bigmacKeys" style="font-weight: bold;">0</span> Big Macs!</td>
+                        <td id="bigmacKeysBar">&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;</td>
+                        <td id="bigmacKeysPercent">000%</td>
+                    </tr>
+                    <tr>
+                        <td>...Burn <span id="weedKeys" style="font-weight: bold;">0</span> grams of weed!</td>
+                        <td id="weedKeysBar">&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;</td>
+                        <td id="weedKeysPercent">000%</td>
+                    </tr>
+                    <tr>
+                        <td>You've burned a total of <span id="caloriesKeys" style="font-weight: bold;">0</span> calories!</td>
+                        <td id="caloriesKeysBar">&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;</td>
+                        <td id="caloriesKeysPercent">000%</td>
+                    </tr>
+                    
+                </table>
+
+                <h2>Clicks | <span id="totalClicks">000000</span></h2>
+
+                <table>
+                    <tr>
+                        <td title="Total as of Aug 2026: 7224747">You could have visited <span id="wikiClicks" style="font-weight: bold;">0</span> of all Wikipedia articles!</td>
+                        <td id="wikiClicksBar">&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;</td>
+                        <td id="wikiClicksPercent">000%</td>
+                    </tr>
+                    <tr>
+                        <td title="Total as of Aug 2026: 88343822">...<span id="scihubClicks" style="font-weight: bold;">0</span> SciHub articles!</td>
+                        <td id="scihubClicksBar">&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;</td>
+                        <td id="scihubClicksPercent">000%</td>
+                    </tr>
+                    <tr>
+                        <td title="Approx 15120000000 blocks in a natural world">...Broken <span id="minecraftClicks" style="font-weight: bold;">000%</span> of a Minecraft world!</td>
+                        <td id="minecraftClicksBar">&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;</td>
+                    </tr>
+                    <tr>
+                        <td>...Reached <span id="bitsmallClicks" style="font-weight: bold;">000%</span> of a 32 bit integer overflow!</td>
+                        <td id="bitsmallClicksBar">&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;</td>
+                    </tr>
+                    <tr>
+                        <td>...Reached <span id="bitlargeClicks" style="font-weight: bold;">000%</span> of a 64 bit integer overflow!</td>
+                        <td id="bitlargeClicksBar">&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;</td>
+                    </tr>
+                </table>
+
+                <h2>Uploaded/Downloaded Data  | <span id="totalData">0000</span> GB</h2>
+
+                <table>
+                    <tr>
+                        <td>You could fill <span id="blurayData" style="font-weight: bold;">0</span> Blu-Ray discs!</td>
+                        <td id="blurayDataBar">&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;</td>
+                        <td id="blurayDataPercent">000%</td>
+                    </tr>
+                    <tr>
+                        <td title="Assuming 4k streaming">...Stream Netflix for <span id="netflixData" style="font-weight: bold;">000</span> hours!</td>
+                        <td id="netflixDataBar">&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;</td>
+                        <td id="netflixDataPercent">000%</td>
+                    </tr>
+                    <tr>
+                        <td title="Only 24.7 GB as of Aug 2026">...Download all Wikipedia's text <span id="wikitextData" style="font-weight: bold;">0</span> times!</td>
+                        <td id="wikitextDataBar">&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;</td>
+                        <td id="wikitextDataPercent">000%</td>
+                    </tr>
+                    <tr>
+                        <td title="100 TB as of Aug 2026">...All of SciHub <span id="scihubData" style="font-weight: bold;">0</span> times!</td>
+                        <td id="scihubDataBar">&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;</td>
+                        <td id="scihubDataPercent">000%</td>
+                    </tr>
+                    <tr>
+                        <td title="987.41 TB as of Aug 2026">...All of Wikipedia's media <span id="wikimediaData" style="font-weight: bold;">0</span> times!</td>
+                        <td id="wikimediaDataBar">&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;</td>
+                        <td id="wikimediaDataPercent">000%</td>
+                    </tr>
+                    <tr>
+                        <td title="Approx 402740000 TB as of Aug 2026">You've created <span id="trafficData" style="font-weight: bold;">000%</span> of a day's worth of internet traffic!</td>
+                        <td id="trafficDataBar">&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;</td>
+                    </tr>
+                </table>
+
+                <h2>Scrolls | <span id="totalScrolls">000000</span></h2>
+
+                <table>
+                    <tr>
+                        <td title="Assuming normal 24 scrolls/rotation mouse">You've completed <span id="rotationsScroll" style="font-weight: bold;">0</span> full rotations!</td>
+                    </tr><tr>
+                        <td title="Assuming 1 scroll = 100 pixels = 1.04 inches">...Scrolled <span id="distanceScroll" style="font-weight: bold;">0</span> <span id="scrollDistance">miles!</span></td>
+                    </tr>
+                </table>
+
+                <h2>Mouse Distance | <span id="totalMouse">0000</span> <span id="distanceUnit">Miles</span></h2>
+
+                <table>
+                    <tr>
+                        <td title="American football! 100 yards!">Your mouse has traveled <span id="footballDistance" style="font-weight: bold;">0</span> football fields!</td>
+                        <td id="footballDistanceBar">&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;</td>
+                        <td id="footballDistancePercent">000%</td>
+                    </tr><tr>
+                        <td title="Tallest mountain in the world, 5.498 miles">...Climbed Mt. Kea <span id="mtkeaMouse" style="font-weight: bold;">0</span> times!</td>
+                        <td id="mtkeaMouseBar">&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;</td>
+                        <td id="mtkeaMousePercent">000%</td>
+                    </tr><tr>
+                        <td title="62 miles from Earth's surface to the edge of space">...Traveled to space <span id="spaceDistance" style="font-weight: bold;">0</span> times!</td>
+                        <td id="spaceDistanceBar">&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;</td>
+                        <td id="spaceDistancePercent">000%</td>
+                    </tr><tr>
+                        <td>...Ran the Indy 500 <span id="littleMouse" style="font-weight: bold;">0</span> times!</td>
+                        <td id="littleMouseBar">&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;</td>
+                        <td id="littleMousePercent">000%</td>
+                    </tr>
+                    <tr>
+                        <td title="1779 Miles, from rorytufano.blogspot.com/2013/03/how-far-did-frodo-go.html">...Walked from The Shire to Mount Doom <span id="shireMouse" style="font-weight: bold;">0</span> times!</td>
+                        <td id="shireMouseBar">&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;</td>
+                        <td id="shireMousePercent">000%</td>
+                    </tr>
+                    <tr>
+                        <td title="The longest straight line distance in the mainland US is 2892 miles">...Crossed the US <span id="usaMouse" style="font-weight: bold;">0</span> times!</td>
+                        <td id="usaMouseBar">&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;</td>
+                        <td id="usaMousePercent">000%</td>
+                    </tr><tr>
+                        <td>...Traveled the Nile River <span id="nileMouse" style="font-weight: bold;">0</span> times!</td>
+                        <td id="nileMouseBar">&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;</td>
+                        <td id="nileMousePercent">000%</td>
+                    </tr><tr>
+                        <td>...The Great Wall of China <span id="chinaMouse" style="font-weight: bold;">0</span> times!</td>
+                        <td id="chinaMouseBar">&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;</td>
+                        <td id="chinaMousePercent">000%</td>
+                    </tr><tr>
+                        <td>...The Australian coastline <span id="australiaMouse" style="font-weight: bold;">0</span> times!</td>
+                        <td id="australiaMouseBar">&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;</td>
+                        <td id="australiaMousePercent">000%</td>
+                    </tr><tr>
+                        <td>...The circumference of the Earth <span id="earthMouse" style="font-weight: bold;">0</span> times!</td>
+                        <td id="earthMouseBar">&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;</td>
+                        <td id="earthMousePercent">000%</td>
+                    </tr>
+                    <tr>
+                        <td>...The distance of <span id="lightMouse" style="font-weight: bold;">0</span> light seconds!</td>
+                        <td id="lightMouseBar">&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;</td>
+                        <td id="lightMousePercent">000%</td>
+                    </tr>
+                    <tr>
+                        <td>...To the Moon <span id="moonMouse" style="font-weight: bold;">0</span> times!</td>
+                        <td id="moonMouseBar">&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;</td>
+                        <td id="moonMousePercent">000%</td>
+                    </tr>
+                    <tr>
+                        <td>...To Mars <span id="marsMouse" style="font-weight: bold;">0</span> times!</td>
+                        <td id="marsMouseBar">&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;</td>
+                        <td id="marsMousePercent">000%</td>
+                    </tr>
+                </table>
+
+                <span id="wordsTab">
+
+                <h2>Words | <span id="totalWords">000000</span></h2>
+
+                <table>
+                    <tr>
+                        <td>You could have written The Hitchhiker's Guide to the Galaxy <span id="guideWords" style="font-weight: bold;">0</span> times!</td>
+                        <td id="guideWordsBar">&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;</td>
+                        <td id="guideWordsPercent">000%</td>
+                    </tr>
+                    <tr>
+                        <td title="190373, from reddit.com/r/houseofleaves/comments/1ghvihh/">...House of Leaves <span id="leavesWords" style="font-weight: bold;">0</span> times!</td>
+                        <td id="leavesWordsBar">&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;</td>
+                        <td id="leavesWordsPercent">000%</td>
+                    </tr>
+                    <tr>
+                        <td>...War and Peace <span id="warWords" style="font-weight: bold;">0</span> times!</td>
+                        <td id="warWordsBar">&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;</td>
+                        <td id="warWordsPercent">000%</td>
+                    </tr><tr>
+                        <td title="5125583368 words as of Aug 2026">...All of Wikipedia <span id="wikiWords" style="font-weight: bold;">0</span> times!</td>
+                        <td id="wikiWordsBar">&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;</td>
+                        <td id="wikiWordsPercent">000%</td>
+                    </tr>
+                </table>
+
+            </span>
+
+                <h2>Uptime | <span id="totalUptime">00y 00m 00d 00h 00m</span></h2>
+
+                <table>
+                    <tr>
+                        <td title="$7.25 in the US">Working this long at minimum wage would earn you &dollar;<span id="wageTime" style="font-weight: bold;">0.00</span></td>
+                    </tr><tr>
+                        <td title="Started September 6th, 2016, while I was in 8th grade!">Your computers have been online for <span id="cookieTime" style="font-weight: bold;">0</span> times as long as Kellen's Cookie Clicker save!</td>
+                        <td id="cookieTimeBar">&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;</td>
+                        <td id="cookieTimePercent">000%</td>
+                    </tr><tr>
+                        <td>Traveling that far into the past would take you to Y2K <span id="y2kTime" style="font-weight: bold;">0</span> times!</td>
+                        <td id="y2kTimeBar">&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;</td>
+                        <td id="y2kTimePercent">000%</td>
+                    </tr><tr>
+                        <td>...The release of Doom <span id="doomTime" style="font-weight: bold;">0</span> times!</td>
+                        <td id="doomTimeBar">&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;</td>
+                        <td id="doomTimePercent">000%</td>
+                    </tr><tr>
+                        <td>...The fall of the Berlin Wall <span id="berlinTime" style="font-weight: bold;">0</span> times!</td>
+                        <td id="berlinTimeBar">&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;</td>
+                        <td id="berlinTimePercent">000%</td>
+                    </tr><tr>
+                        <td>...The release of Super Mario Bros. <span id="marioTime" style="font-weight: bold;">0</span> times!</td>
+                        <td id="marioTimeBar">&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;</td>
+                        <td id="marioTimePercent">000%</td>
+                    </tr><tr>
+                        <td>...The invention of the light bulb <span id="lightTime" style="font-weight: bold;">0</span> times!</td>
+                        <td id="lightTimeBar">&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;</td>
+                        <td id="lightTimePercent">000%</td>
+                    </tr>
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+</html>
