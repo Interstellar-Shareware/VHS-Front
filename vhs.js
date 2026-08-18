@@ -100,10 +100,10 @@ function processStats(result){
     standardData("vbatteryKeys", _keys, 19440);
     standardData("waterKeys", _keysKJ, 225);
     standardData("coffeeKeys", _keysJ, 8368);
-    standardData("grapesKeys", _keysKJ, 288);
+    standardData("grapesKeys", _keysKJ, 16.736);
     standardData("bigmacKeys", _keysKJ, 2400);
     standardData("weedKeys", _keysKJ, 19.3);
-    standardData("caloriesKeys", _keysJ, .239);
+    standardData("caloriesKeys", _keysJ, 4154);
     //Clicks
     standardData("wikiClicks", _clicks, 7224747);
     standardData("scihubClicks", _clicks, 88343822);
