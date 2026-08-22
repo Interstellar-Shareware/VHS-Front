@@ -97,7 +97,7 @@ function processStats(result){
     //Keys-energy
     standardData("potatoKeys", _keysJ, 2.69568);
     standardData("aabatteryKeys", _keysJ, 12500);
-    standardData("vbatteryKeys", _keys, 19440);
+    standardData("vbatteryKeys", _keysJ, 19440);
     standardData("waterKeys", _keysKJ, 225);
     standardData("coffeeKeys", _keysJ, 8368);
     standardData("grapesKeys", _keysKJ, 16.736);
